@@ -15,6 +15,7 @@ REQUEST_COLOR = {
 
 
 class UrlLabel(Section):
+    clicked = QtCore.pyqtSignal()
 
     def __init__(self, request_type, request_url):
         super(UrlLabel, self).__init__(layout_type="horizontal")
@@ -48,7 +49,6 @@ class UrlLabel(Section):
             h_stretch=5
         )
 
-    def mousePressEvent(self, a0: QtGui.QMouseEvent):
-        # Test output later to be replaced by injection to the url QTextEdit
-        print(self.type_label.text())
-        print(self.text_label.text())
+    def mousePressEvent(self, event):
+        self.clicked.emit()
+        Section.mousePressEvent(self, event)

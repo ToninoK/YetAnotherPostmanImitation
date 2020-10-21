@@ -26,6 +26,15 @@ url_label = """
     }
     """
 
+url_bar = """
+    QFrame#urlBar {
+        margin: auto;
+        margin-bottom: 0px;
+        margin-top: 30px;    
+        border: none;
+    }
+    """
+
 url_type = lambda x: f"""
     QLabel {{
         color: {x[0]};
@@ -47,4 +56,34 @@ url_text = """
     }
     QLabel::hover {
         background-color :#ffffff;
+    }"""
+
+type_dropdown = """
+    QComboBox {
+        margin: 0px;
+        color: #141414;
+        padding-left: 7px;
+        font-weight: 450;
+        background-color: white
+    }"""
+
+url_entry = """
+    QTextEdit {
+        margin: 0;
+        color: #141414;
+        border: 1px solid #aaaaaa;
+        border-left: 0px;
+        background-color: white;
+        vertical-align: center;
+        font-size: 14px
+    }"""
+
+send_button = """
+    QPushButton {
+        color: #141414;
+        margin: 0;
+        border: 1px solid #aaaaaa;
+        border-left: 0px;
+        font-weight: 450;
+        background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 white, stop: 1 white);
     }"""

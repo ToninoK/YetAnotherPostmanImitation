@@ -43,5 +43,21 @@ class Section(QFrame):
             widget.setSizePolicy(self.build_size_policy(v_policy, h_policy, v_stretch, h_stretch))
         self._layout.addWidget(widget)
 
+    def count(self):
+        return self._layout.count()
+
+    def item_at(self, index):
+        return self._layout.itemAt(index).widget()
+
     def set_spacing(self, spacing):
         self._layout.setSpacing(spacing)
+
+    def remove_widget(self, widget):
+        self._layout.removeWidget(widget)
+
+    def pop(self):
+        if self.count() > 1:
+            self.remove_widget(self.item_at(self.count()-1))
+
+    def insert_widget(self, index, widget):
+        self._layout.insertWidget(index, widget)

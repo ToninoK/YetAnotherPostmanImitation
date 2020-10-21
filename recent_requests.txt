@@ -1,0 +1,9 @@
+DELETE-0.0.0.0/home
+DELETE-0.0.0.0/home
+DELETE-0.0.0.0/home
+DELETE-0.0.0.0/home
+POST-0.0.0.0/home
+POST-0.0.0.0/home
+POST-0.0.0.0/home
+POST-0.0.0.0/home
+GET-0.0.0.0/home

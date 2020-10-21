@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QApplication
 from components.main import Window
 
 app = QApplication([])
+app.setStyle('Fusion')
 
 
 def run():
