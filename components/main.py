@@ -178,11 +178,19 @@ class Window(QWidget):
             return
         result = self.findChild(Result, "resultBox")
         response = result.toPlainText()
+        is_json = False
         try:
-            f = open(f"{page}.txt", "a")
+            json.loads(response)
+            is_json = True
+        except Exception as e:
+            pass
+        try:
+            extension = "json" if is_json else "txt"
+            f = open(f"./saved/{page}.{extension}", "a")
             f.write(response)
             f.close()
         except Exception as e:
+            print(e)
             pass
 
 

@@ -87,3 +87,44 @@ send_button = """
         font-weight: 450;
         background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 white, stop: 1 white);
     }"""
+
+result = """
+    QFrame{
+        margin: auto;
+        margin-top: 15px;
+        margin-bottom: 0px;
+    }
+"""
+
+result_text_edit = """
+    QTextEdit{
+        margin:0px;
+        color: black;
+    }
+"""
+
+params = """
+    QFrame{
+        margin: auto;
+        margin-top: 15px;
+        margin-bottom: 0px;
+    }
+"""
+
+params_text_edit = """
+    QTextEdit{
+        margin: 0px;
+        color: black;
+    }
+"""
+
+save_button = """
+    QPushButton {
+        color: #141414;
+        margin: auto;
+        margin-top: 15px;
+        margin-bottom: 0px;
+        border: 1px solid #aaaaaa;
+        font-weight: 450;
+        background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 white, stop: 1 white);
+    }"""
