@@ -6,6 +6,13 @@ from helpers import style
 from .section import Section
 
 
+class TextEdit(QTextEdit):
+    def keyPressEvent(self, event):
+        if event.key() in (QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter):
+            return
+        super().keyPressEvent(event)
+
+
 class UrlBar(Section):
 
     def __init__(self):
@@ -17,7 +24,7 @@ class UrlBar(Section):
         self.dropdown_menu.addItems(["GET", "POST", "PUT", "DELETE"])
         self.dropdown_menu.setStyleSheet(style.type_dropdown)
 
-        self.url_textbox = QTextEdit()
+        self.url_textbox = TextEdit()
         self.url_textbox.setStyleSheet(style.url_entry)
 
         self.send_button = QPushButton("SEND")
