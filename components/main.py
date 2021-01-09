@@ -1,11 +1,24 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QScrollArea, QSizePolicy
+import requests
+import json
 
+from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QScrollArea, QSizePolicy, QPushButton
+
+from PyQt5.QtCore import Qt
 from helpers import style
 
 from .section import Section
 from .url_label import UrlLabel
 from .url_bar import UrlBar
+from .result import Result
+from .params import Params
+
+REQUEST_TYPE = {
+    "GET": requests.get,
+    "POST": requests.post,
+    "PUT": requests.put,
+    "DELETE": requests.delete,
+}
 
 
 class Window(QWidget):
@@ -31,8 +44,15 @@ class Window(QWidget):
         right_section.setMinimumWidth(800)
         self.generate_left_content(left_section)
         self.generate_right_content(right_section)
+       
+        scroll = QScrollArea()
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setWidgetResizable(True)
+        scroll.setMinimumWidth(400)
+        scroll.setWidget(left_section)
 
-        splitter = self.make_main_splitter(left_section, right_section)
+        splitter = self.make_main_splitter(scroll, right_section)
 
         h_box.addWidget(splitter)
         left_section.setStyleSheet(style.main_section)
@@ -63,6 +83,7 @@ class Window(QWidget):
 
     def generate_left_content(self, section):
         section.set_spacing(0)
+
         title_label = QtWidgets.QLabel("Recent Requests")
         title_label.setStyleSheet(style.title_label)
         title_label.setFixedHeight(45)
@@ -74,6 +95,7 @@ class Window(QWidget):
                 url = UrlLabel(url[0], url[1])
                 url.clicked.connect(self.on_url_label_click)
                 section.add_widget(url)
+        
 
     def generate_right_content(self, section):
         section.set_spacing(0)
@@ -82,6 +104,25 @@ class Window(QWidget):
         url_bar_section.setMaximumHeight(60)
         section.add_widget(url_bar_section)
 
+        params = Params()
+        params.setFixedHeight(150)
+        params.setObjectName("paramsBox")
+        section.add_widget(params)
+
+        result = Result()
+        result.setFixedHeight(500)
+        result.setObjectName("resultBox")
+        section.add_widget(result)
+
+        save_button = QPushButton("SAVE")
+        save_button.setStyleSheet(style.save_button)
+        save_button.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        save_button.clicked.connect(self.on_save_response)
+        save_button.setMaximumHeight(40)
+        save_button.setMaximumWidth(200)
+        section.add_widget(
+            save_button
+        )
     @staticmethod
     def load_urls_file():
         file = open("./recent_requests.txt", "r")
@@ -92,26 +133,58 @@ class Window(QWidget):
         url_bar = self.findChild(UrlBar, "urlBar")
         type_request = url_bar.dropdown_menu.currentText()
         url_request = url_bar.url_textbox.toPlainText()
-        print((not type_request))
-        print((not url_request))
         if not url_request:
             return
 
         file = open("./recent_requests.txt", "r")
         all_requests = file.read().split("\n")
-        if len(all_requests) > 30:
+        if len(all_requests) > 45:
             all_requests = all_requests[:-1]
         updated_requests = [f"{type_request}-{url_request}", *all_requests]
 
         left = self.findChild(Section, "leftSide")
-        print(left.count())
         if left.count() >= 29:
             left.pop()
         new_recent = UrlLabel(type_request, url_request)
         new_recent.clicked.connect(self.on_url_label_click)
         left.insert_widget(1, new_recent)
 
+        try:
+
+            print(type_request)
+            request = REQUEST_TYPE[type_request]
+            param_text = self.findChild(Params, "paramsBox").toPlainText()
+            params = {}
+            try:
+                params = json.loads(param_text)
+            except Exception as e:
+                pass
+
+            if type_request != "GET":
+                resp = request(url_request, json=params)
+            else:
+                resp = request(url_request)
+        except Exception as e:
+            resp = "Url not found"
+        result = self.findChild(Result, "resultBox")
+        result.insert_data(resp)
         self.save_to_file(updated_requests)
+
+    def on_save_response(self):
+        url_bar = self.findChild(UrlBar, "urlBar")
+        try:
+            page = url_bar.url_textbox.toPlainText().split("/")[2]
+        except Exception as e:
+            return
+        result = self.findChild(Result, "resultBox")
+        response = result.toPlainText()
+        try:
+            f = open(f"{page}.txt", "a")
+            f.write(response)
+            f.close()
+        except Exception as e:
+            pass
+
 
     @staticmethod
     def save_to_file(all_requests):
